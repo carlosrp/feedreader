@@ -50,6 +50,9 @@ $(function() {
          });
     });
 
+    /*
+     * Test suite for application menu
+     */
     describe('The menu', function() {
       /* Ensure the menu element is hidden by default.
        */
@@ -69,6 +72,10 @@ $(function() {
         }, 1000);
       }
 
+      /**
+       * Ensure tht when clicking menu once it becomes visible;
+       * one second click, menu becomes unvisible.
+       */
       it('visible when clicked once, not visible when clicked again', function(done) {
         menuClick(done);
         expect($('body').hasClass('menu-hidden')).toBe(false);
@@ -79,6 +86,9 @@ $(function() {
 
     });
 
+    /**
+     * Test suite to check that feeds load
+     */
     describe('Initial Entries', function() {
       /* Ensures when the loadFeed
        * function is called and completes its work, there is at least
@@ -95,15 +105,24 @@ $(function() {
 
     });
 
+    /**
+     * Test suite to validate that loading feeds change contents
+     */
     describe('New Feed Selection', function() {
       var prevEntry;
       var idFeed = 0;
 
+      /*
+       * Only first time, load first feed (asyncronous)
+       */
       beforeAll(function(done) {
         loadFeed(idFeed, done);
         idFeed += 1;
       });
 
+      /*
+       * For each feed (starting from second), charge feed and cehck contents
+       */
       beforeEach(function(done) {
         prevEntry = $('.feed .entry-link:first-child h2').text();
         console.log('Before:', prevEntry);
@@ -111,6 +130,10 @@ $(function() {
         idFeed += 1;
       });
 
+      /**
+       * Loop over all feeds, starting from second and validate that contents
+       * change it time
+       */
       for(id=1; id<allFeeds.length; id++) {
         it('New feed data is loaded - ' + allFeeds[id].name, function(done) {
           console.log('After:', $('.feed .entry-link:first-child h2').text());
