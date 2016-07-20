@@ -60,26 +60,14 @@ $(function() {
         expect($('body').hasClass('menu-hidden')).toBe(true);
       });
 
-       /* Ensures the menu changes
-        * visibility when the menu icon is clicked. This test
-        * should have two expectations: does the menu display when
-        * clicked and does it hide when clicked again.
-        */
-      function menuClick(done) {
-        $('.menu-icon-link').trigger('click');
-        setTimeout(function() {
-          done();
-        }, 1000);
-      }
-
       /**
        * Ensure tht when clicking menu once it becomes visible;
        * one second click, menu becomes unvisible.
        */
       it('visible when clicked once, not visible when clicked again', function(done) {
-        menuClick(done);
+        $('.menu-icon-link').trigger('click');
         expect($('body').hasClass('menu-hidden')).toBe(false);
-        menuClick(done);
+        $('.menu-icon-link').trigger('click');
         expect($('body').hasClass('menu-hidden')).toBe(true);
         done();
       });
@@ -98,9 +86,8 @@ $(function() {
          loadFeed(0, done);
        });
 
-       it('at least one entry in feed', function(done) {
-         expect($('.feed .entry')).toBeDefined();
-         done();
+       it('at least one entry in feed', function() {
+         expect($('.feed .entry').length).toBeGreaterThan(0);
        });
 
     });
@@ -110,37 +97,29 @@ $(function() {
      */
     describe('New Feed Selection', function() {
       var prevEntry;
-      var idFeed = 0;
 
       /*
        * Only first time, load first feed (asyncronous)
        */
       beforeAll(function(done) {
-        loadFeed(idFeed, done);
-        idFeed += 1;
+        loadFeed(0, done);
       });
 
       /*
        * For each feed (starting from second), charge feed and cehck contents
        */
       beforeEach(function(done) {
-        prevEntry = $('.feed .entry-link:first-child h2').text();
-        console.log('Before:', prevEntry);
-        loadFeed(idFeed, done);
-        idFeed += 1;
+        prevEntry = $('.feed').html();
+        loadFeed(1, done);
       });
 
       /**
-       * Loop over all feeds, starting from second and validate that contents
-       * change it time
+       * Validate that when loading a feed, contents change
        */
-      for(id=1; id<allFeeds.length; id++) {
-        it('New feed data is loaded - ' + allFeeds[id].name, function(done) {
-          console.log('After:', $('.feed .entry-link:first-child h2').text());
-          expect($('.feed .entry-link:first-child h2').text()).not.toBe(prevEntry);
-          done();
-        });
-      }
+      it('New feed data is loaded', function() {
+        expect($('.feed').html()).not.toBe(prevEntry);
+      });
+
     });
 
 }());
